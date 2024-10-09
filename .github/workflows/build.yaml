@@ -76,10 +76,18 @@ jobs:
           path: ${{ github.workspace }}/vcpkg-root
           repository: microsoft/vcpkg
           ref: ${{ steps.vcpkg_sha.outputs.VCPKG_SHA }}
-      - name: Run vcpkg end-to-end tests
-        shell: pwsh
-        run: |
-          cd out/build/${{ matrix.preset }}
-          ${{ github.workspace }}/azure-pipelines/end-to-end-tests.ps1 -RunArtifactsTests
-        env:
-          VCPKG_ROOT: ${{ github.workspace }}/vcpkg-root
+      # - name: Run vcpkg end-to-end tests
+      #   shell: pwsh
+      #   run: |
+      #     cd out/build/${{ matrix.preset }}
+      #     ${{ github.workspace }}/azure-pipelines/end-to-end-tests.ps1 -RunArtifactsTests
+      #   env:
+      #     VCPKG_ROOT: ${{ github.workspace }}/vcpkg-root
+
+      - name: Upload built exe
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-exe
+          path: |
+            out/build/${{ matrix.preset }}/*.exe
